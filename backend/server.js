@@ -54,7 +54,7 @@ app.post('/build-resume', async (req, res) => {
     const relativePath = await generateResumePdf(resumeData, filename); // e.g. "/pdfs/resume-12345.pdf"
 
     // Make sure your backend base URL is correct
-    const backendBaseUrl = 'http://localhost:5000'; // or use process.env.BASE_URL for production
+    const backendBaseUrl = 'https://resume-builder-jdfg.onrender.com'; // or use process.env.BASE_URL for production
     const resumeDownloadUrl = `${backendBaseUrl}${relativePath}`;
 
 

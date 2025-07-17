@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 
 export default function CreateResume() {
   const [form, setForm] = useState({
@@ -10,54 +10,64 @@ export default function CreateResume() {
     summary: '',
     skills: '',
     education: '',
-    experience: ''
+    experience: '',
+    certifications: '',
+    projects: '',
+    languages: '',
+    hobbies: '',
+    linkedin: '',
+    portfolio: '',
+    X: '',
+    Github: ''
   });
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  try {
-    const response = await fetch('http://localhost:5000/build-resume', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    });
+    try {
+      const response = await fetch('https://resume-builder-jdfg.onrender.com/build-resume', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
 
-    if (!response.ok) {
-      throw new Error('Failed to build resume');
+      if (!response.ok) {
+        throw new Error('Failed to build resume');
+      }
+
+      const result = await response.json();
+      navigate('/build', { state: result });
+    } catch (err) {
+      alert('Something went wrong while building the resume.');
+      console.error(err);
     }
-
-    const result = await response.json();
-
-    // Assuming response is: { resume: {...}, atsScore: 88, resumeDownloadUrl: '...' }
-    navigate('/build', { state: result });
-
-  } catch (err) {
-    alert('Something went wrong while building the resume.');
-    console.error(err);
-  }
-};
+  };
 
   const handleAISuggestion = async () => {
-  const response = await fetch('http://localhost:5000/generate-summary', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      jobTitle: form.jobTitle,
-      skills: form.skills,
-      experience: form.experience,
-    }),
-  });
+    try {
+      const response = await fetch('https://resume-builder-jdfg.onrender.com/generate-summary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jobTitle: form.jobTitle,
+          skills: form.skills,
+          experience: form.experience,
+        }),
+      });
 
-  const data = await response.json();
-  setForm({ ...form, summary: data.summary });
-};
-
+      const data = await response.json();
+      setForm({ ...form, summary: data.summary });
+    } catch (error) {
+      alert('Failed to generate AI summary.');
+      console.error(error);
+    }
+  };
 
   return (
     <div className="min-h-screen py-16 px-6">
@@ -73,7 +83,7 @@ const handleSubmit = async (e) => {
               value={form.name}
               onChange={handleChange}
               required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
             />
           </div>
 
@@ -87,7 +97,7 @@ const handleSubmit = async (e) => {
                 value={form.email}
                 onChange={handleChange}
                 required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
               />
             </div>
             <div>
@@ -98,7 +108,7 @@ const handleSubmit = async (e) => {
                 value={form.phone}
                 onChange={handleChange}
                 required
-                className="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
               />
             </div>
           </div>
@@ -112,7 +122,7 @@ const handleSubmit = async (e) => {
               value={form.jobTitle}
               onChange={handleChange}
               required
-              className="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
             />
           </div>
 
@@ -125,18 +135,18 @@ const handleSubmit = async (e) => {
               onChange={handleChange}
               rows="3"
               required
-              className="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
             />
-          </div>
-          <div className="text-right">
-                <button
-                    type="button"
-                    onClick={handleAISuggestion}
-                    className="text-sm font-semibold text-white px-4 py-2 rounded bg-gradient-to-r from-purple-500 via-fuchsia-500 to-pink-500 hover:from-pink-500 hover:via-fuchsia-500 hover:to-purple-500 transition-all duration-1000 ease-in-out shadow-md"
-                    >
-                    🤖 Suggest with AI
-                    </button>
+            <div className="text-right mt-2">
+              <button
+                type="button"
+                onClick={handleAISuggestion}
+                className="text-sm font-semibold text-white px-4 py-2 rounded bg-gradient-to-r from-purple-500 via-fuchsia-500 to-pink-500 hover:from-pink-500 hover:via-fuchsia-500 hover:to-purple-500 transition-all duration-1000 ease-in-out shadow-md"
+              >
+                🤖 Suggest with AI
+              </button>
             </div>
+          </div>
 
           {/* Skills */}
           <div>
@@ -147,7 +157,7 @@ const handleSubmit = async (e) => {
               value={form.skills}
               onChange={handleChange}
               required
-              className="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
             />
           </div>
 
@@ -160,105 +170,105 @@ const handleSubmit = async (e) => {
               onChange={handleChange}
               rows="2"
               required
-              className="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
             />
           </div>
+
           {/* Certifications */}
-            <div>
+          <div>
             <label className="block text-sm font-medium text-gray-700">Certifications</label>
             <textarea
-                name="certifications"
-                value={form.certifications || ''}
-                onChange={handleChange}
-                rows="2"
-                className="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              name="certifications"
+              value={form.certifications}
+              onChange={handleChange}
+              rows="2"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
             />
-            </div>
+          </div>
 
-            {/* Projects */}
-            <div>
+          {/* Projects */}
+          <div>
             <label className="block text-sm font-medium text-gray-700">Key Projects</label>
             <textarea
-                name="projects"
-                value={form.projects || ''}
-                onChange={handleChange}
-                rows="3"
-                className="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              name="projects"
+              value={form.projects}
+              onChange={handleChange}
+              rows="3"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
             />
-            </div>
+          </div>
 
-            {/* Languages */}
-            <div>
+          {/* Languages */}
+          <div>
             <label className="block text-sm font-medium text-gray-700">Languages</label>
             <input
-                type="text"
-                name="languages"
-                value={form.languages || ''}
-                onChange={handleChange}
-                className="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              type="text"
+              name="languages"
+              value={form.languages}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
             />
-            </div>
+          </div>
 
-            {/* Hobbies */}
-            <div>
+          {/* Hobbies */}
+          <div>
             <label className="block text-sm font-medium text-gray-700">Hobbies & Interests</label>
             <input
-                type="text"
-                name="hobbies"
-                value={form.hobbies || ''}
-                onChange={handleChange}
-                className="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              type="text"
+              name="hobbies"
+              value={form.hobbies}
+              onChange={handleChange}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
             />
-            </div>
+          </div>
 
-            {/* LinkedIn / Portfolio */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {/* Social Links */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
-                <label className="block text-sm font-medium text-gray-700">LinkedIn</label>
-                <input
+              <label className="block text-sm font-medium text-gray-700">LinkedIn</label>
+              <input
                 type="url"
                 name="linkedin"
-                value={form.linkedin || ''}
+                value={form.linkedin}
                 onChange={handleChange}
                 placeholder="https://linkedin.com/in/yourname"
-                className="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                />
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
+              />
             </div>
             <div>
-                <label className="block text-sm font-medium text-gray-700">Portfolio</label>
-                <input
+              <label className="block text-sm font-medium text-gray-700">Portfolio</label>
+              <input
                 type="url"
                 name="portfolio"
-                value={form.portfolio || ''}
+                value={form.portfolio}
                 onChange={handleChange}
                 placeholder="https://yourportfolio.com"
-                className="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                />
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
+              />
             </div>
             <div>
-                <label className="block text-sm font-medium text-gray-700">Twitter</label>
-                <input
+              <label className="block text-sm font-medium text-gray-700">Twitter</label>
+              <input
                 type="url"
                 name="X"
-                value={form.X || ''}
+                value={form.X}
                 onChange={handleChange}
                 placeholder="https://twitter.com"
-                className="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                />
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
+              />
             </div>
             <div>
-                <label className="block text-sm font-medium text-gray-700">GitHubr</label>
-                <input
+              <label className="block text-sm font-medium text-gray-700">GitHub</label>
+              <input
                 type="url"
                 name="Github"
-                value={form.Github || ''}
+                value={form.Github}
                 onChange={handleChange}
                 placeholder="https://github.com"
-                className="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                />
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
+              />
             </div>
-
-            </div>
+          </div>
 
           {/* Experience */}
           <div>
@@ -269,10 +279,11 @@ const handleSubmit = async (e) => {
               onChange={handleChange}
               rows="3"
               required
-              className="p-2 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2"
             />
           </div>
-          {/* Submit Button */}
+
+          {/* Submit */}
           <div className="text-center">
             <button
               type="submit"
