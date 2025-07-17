@@ -21,6 +21,7 @@ export default function CreateResume() {
     Github: ''
   });
 
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -31,7 +32,7 @@ export default function CreateResume() {
     e.preventDefault();
 
     try {
-      const response = await fetch('https://resume-builder-jdfg.onrender.com/build-resume', {
+      const response = await fetch(`${BACKEND_URL}/build-resume`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
@@ -51,7 +52,7 @@ export default function CreateResume() {
 
   const handleAISuggestion = async () => {
     try {
-      const response = await fetch('https://resume-builder-jdfg.onrender.com/generate-summary', {
+      const response = await fetch(`${BACKEND_URL}/generate-summary`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
