@@ -1,14 +1,14 @@
 import React from'react';
-import Navbar from './navbar.jsx';
 import Feature from './feature.jsx';
+import Navigation from './navigation.jsx';
 import Call from './call.jsx';
 import Benefit from './benifit.jsx';
-import TestimonialSection from './testimonial.jsx';  
+import TestimonialSection from './testimonial.jsx'; 
 
 function App() {
   return (
       <>
-    <Navbar />
+    <Navigation />
     <Feature />
     <Call />
     <Benefit />
