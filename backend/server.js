@@ -7,7 +7,7 @@ dotenv.config();
 
 const app = express();
 app.use(cors({
-  origin: 'https://resume-builder-tbfk.vercel.app/', // ✅ change this to your actual frontend URL
+  origin: 'https://resume-builder-tbfk.vercel.app', // ✅ change this to your actual frontend URL
   credentials: true
 }));
 
