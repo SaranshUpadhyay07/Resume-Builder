@@ -34,38 +34,19 @@ app.post('/generate-summary', async (req, res) => {
   }
 });
 
-// Route 2: Build resume and calculate ATS score
-const generateResumePdf = require('./utils/generateResumePdf');
-const path = require('path');
 
-// Serve static files in /public
-app.use('/pdfs', express.static(path.join(__dirname, 'public/pdfs')));
 
 app.post('/build-resume', async (req, res) => {
   const resumeData = req.body;
-
   try {
     const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-
     const prompt = `...`; // your ATS prompt from earlier
-
     const result = await model.generateContent(prompt);
     const atsScoreText = result.response.text().replace(/[^0-9]/g, '');
     const atsScore = parseInt(atsScoreText) || Math.floor(Math.random() * 30 + 60);
-
-    // Generate PDF and get public link
-    const filename = `resume-${Date.now()}.pdf`;
-    const relativePath = await generateResumePdf(resumeData, filename); // e.g. "/pdfs/resume-12345.pdf"
-
-    // Make sure your backend base URL is correct
-    const backendBaseUrl = 'https://resume-builder-jdfg.onrender.com'; // or use process.env.BASE_URL for production
-    const resumeDownloadUrl = `${backendBaseUrl}${relativePath}`;
-
-
     res.status(200).json({
       resume: resumeData,
-      atsScore,
-      resumeDownloadUrl
+      atsScore
     });
   } catch (error) {
     console.error('Build error:', error.message);
